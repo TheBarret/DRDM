@@ -51,6 +51,34 @@ The system resolves damage deterministically given only:
 | Health | H_p (HP) | Structural integrity |
 | Material | m | Steel, aluminum, or composite |
 
+
+## Early Testing
+
+```text
+python run.py
+Pistol vs Car Door:
+    AMMO        : PISTOL | P: 2mm | Cal: 9.0mm | Angle: 0°
+    PLATE       : 1.0mm steel | Health: 50/50
+    OUTCOME     : PENETRATED
+    Residual    : 1.5mm
+    Damage      : 14.4 HP
+    New health  : 36 HP
+Rifle AP vs Light Armor:
+    AMMO        : RIFLE_BALL | P: 5mm | Cal: 5.56mm | Angle: 0°
+    PLATE       : 8.0mm steel | Health: 100/100
+    OUTCOME     : STOPPED
+    Residual    : 0.0mm
+    Damage      : 37.5 HP
+    New health  : 62 HP
+.50 cal vs APC Side (45°):
+    AMMO        : HMGR_AP | P: 25mm | Cal: 12.7mm | Angle: 45°
+    PLATE       : 25.0mm steel | Health: 150/150
+    OUTCOME     : STOPPED
+    Residual    : 0.0mm
+    Damage      : 90.0 HP
+    New health  : 60 HP
+```
+
 ## Logic
 
 Input: [`P_in`, `T`, `d`, `hit_point`, `caliber`, `shot_hash`, `roller`]:
