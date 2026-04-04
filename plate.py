@@ -1,15 +1,6 @@
 """
 Directional Recursive Damage Model (DRDM)
 Plate Component
-
-Changes from draft:
-  - hit() is non-mutating; returns HitResult with proposed new_health.
-    Caller commits: plate.health = result.new_health
-  - Randomness injected via RollProvider protocol; plate has no RNG state.
-  - Material is an enum, not a string — typo-safe, consistent with AmmoType.
-  - Plate damage uses energy-absorption ratio instead of kappa_p / t_ref magic constants.
-  - _handle_he_hesh signature cleaned up (unused params removed).
-  - Seed construction precedence bug fixed.
 """
 
 from __future__ import annotations
