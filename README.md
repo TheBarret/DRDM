@@ -3,6 +3,20 @@
 A deterministic, performance-oriented damage propagation system using penetration values and subtractive residuals.  
 No physics engine required  pure mathematics from first principles to derived semantics. 
 
+# Features
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Penetration model | ✅ Complete | Physics-based, angle-aware |
+| Degradation | ✅ Complete | Sigmoid curve, configurable |
+| Ricochet | ✅ Complete | Angle + overmatch influence |
+| Overmatch | ✅ Complete | Large calibers ignore thickness |
+| HEAT/HESH | ✅ Complete | Surface detonation |
+| Spalling | ✅ Complete | Caliber/angle/penetration aware |
+| Deterministic RNG | ✅ Complete | Seed-based, reproducible |
+| Validation | ✅ Complete | Post-init checks |
+
+
 ## Use Case
 
 For small to medium games or simulations requiring a lightweight, quick-to-evaluate damage model on any actor (vehicle, structure, entity).  
