@@ -19,13 +19,15 @@ class AmmoType(Enum):
     # Medium based
     HMGR_AP    = 10  # .50 cal, 14.5mm API
     GRENADE    = 11  # 40mm HEDP shaped charge — uses penetration path, not HE early-exit
-
+    
+    FRAGMENT     = 12  # Spall/debris: irregular, low-mass, no aerodynamic stability
+    HEAT_JET     = 13  # HEAT cones jettison molten (copper) into segment
+    EFP          = 14  # Explosively Formed Penetrator (distinct from HEAT: solid slug, longer standoff)
 
 class Material(Enum):
     STEEL     = 1
     ALUMINUM  = 2
     COMPOSITE = 3
-
 
 # ── SpallData ─────────────────────────────────────────────────────────────
 
@@ -94,18 +96,22 @@ class Config:
 
     # ── Ricochet ───────────────────────────────────────────────
     ricochet_angle_window: float = 12.0
+    ricochet_seed: int = 2166136261
     ricochet_angles: dict = field(default_factory=lambda: {
-        AmmoType.AP:         68.0,
-        AmmoType.APFSDS:     72.0,
-        AmmoType.HEAT:       75.0,
-        AmmoType.HE:         60.0,
-        AmmoType.HESH:       60.0,
-        AmmoType.PISTOL:     25.0,
-        AmmoType.RIFLE_BALL: 30.0,
-        AmmoType.RIFLE_AP:   40.0,
-        AmmoType.RIFLE_SLAP: 55.0,
-        AmmoType.HMGR_AP:    60.0,
-        AmmoType.GRENADE:    20.0,
+        AmmoType.AP:         68.0,  # Armor Piercing
+        AmmoType.APFSDS:     72.0,  # Armor-Piercing Fin-Stabilized Discarding Sabot
+        AmmoType.HEAT:       75.0,  # HE + Anti-Tank
+        AmmoType.HE:         60.0,  # HE
+        AmmoType.HESH:       60.0,  # HE + energy transfer 
+        AmmoType.PISTOL:     25.0,  # Pistol projectiles
+        AmmoType.RIFLE_BALL: 30.0,  # Rifle
+        AmmoType.RIFLE_AP:   40.0,  # Rifle + AP
+        AmmoType.RIFLE_SLAP: 55.0,  # Rifle + Saboted Light Armor Penetrator
+        AmmoType.HMGR_AP:    60.0,  # Similar to APFSDS but more volatile
+        AmmoType.GRENADE:    20.0,  # HE + FRAGMENT
+        AmmoType.FRAGMENT:   0.0,   # AmmoType to fragments mechanics (embed or shatter; never ricochet)
+        AmmoType.HEAT_JET:   75.0,  # Inherit HEAT behavior, jettison of molten metals
+        AmmoType.EFP:        70.0,  # TODO: Explosively Formed Penetrator
     })
 
     # ── Overmatch ──────────────────────────────────────────────
@@ -114,16 +120,19 @@ class Config:
     overmatch_slope:              float = 0.2
     overmatch_ricochet_reduction: float = 0.5
 
-    # ── HEAT spaced-armor decay ────────────────────────────────
+    # ── HEAT spaced-armor decay length ────────────────────────────────
     heat_jet_decay_length: float = 200.0
+    
+    # ── EFP decay length ────────────────────────────────
+    efp_decay_length: float = 400.0
 
     # ── Plate damage ───────────────────────────────────────────
     # Maps absorbed energy (mm·η) → HP fraction.
-    # At t=100mm steel (η=1.0): energy=100 → damage = 100 * 0.6 * 1.0 = 60 HP.
+    # At t=100mm steel (η=1.0): energy=100 → damage = 100 * 0.6 * 1.0 = 60 HP
     energy_to_hp_scale: float = 0.6
 
-    # Hardness denominator per material (used in absorption ratio).
-    # absorbed / (thickness * hardness) → ratio clamped to [0, 2].
+    # Hardness denominator per material (used in absorption ratio)
+    # absorbed / (thickness * hardness) → ratio clamped to [0, 2]
     material_hardness: dict = field(default_factory=lambda: {
         Material.STEEL:     1.0,
         Material.ALUMINUM:  0.5,
@@ -134,9 +143,9 @@ class Config:
     # degradation_factor:    maximum t_eff reduction at zero health.
     #                        0.4 → a destroyed plate retains 60% effective thickness.
     # degradation_steepness: sharpness of the sigmoid knee.
-    #   Low  (~4):  gradual, near-linear decay.
-    #   Mid  (~8):  plate holds until ~50% health, then drops.
-    #   High (~14): plate holds until late, then collapses sharply.
+    #   Low  (~4):  gradual, near-linear decay
+    #   Mid  (~8):  plate holds until ~50% health, then drops
+    #   High (~14): plate holds until late, then collapses sharply
     degradation_factor:    float = 0.4
     degradation_steepness: float = 8.0
 
@@ -152,7 +161,7 @@ class Config:
     # spall_min_cone:       cone floor at highly oblique impacts.
     # spall_base_velocity:  minimum fragment velocity (m/s).
     # spall_velocity_scale: additional velocity added at full penetration stress.
-    # spall_base_mass:      fragment mass (grams) at 9mm reference caliber.
+    # spall_base_mass:      fragment mass (grams) at 9mm reference caliber
     spall_threshold:         float = 0.7
     spall_base_cone:         float = 20.0
     spall_min_cone:          float = 5.0
@@ -196,5 +205,14 @@ class Config:
         },
         AmmoType.GRENADE: {
             Material.STEEL: 0.5, Material.ALUMINUM: 0.3, Material.COMPOSITE: 0.6,
+        },
+        AmmoType.FRAGMENT: {
+            Material.STEEL: 0.85, Material.ALUMINUM: 0.6, Material.COMPOSITE: 0.9
+        },
+        AmmoType.HEAT_JET: {  # only if you split HEAT
+            Material.STEEL: 0.85, Material.ALUMINUM: 0.6, Material.COMPOSITE: 1.15
+        },
+        AmmoType.EFP: {
+            Material.STEEL: 0.95, Material.ALUMINUM: 0.5, Material.COMPOSITE: 1.0
         },
     })
