@@ -16,11 +16,6 @@ No physics engine required  pure mathematics from first principles to derived se
 | Deterministic RNG | ✅ Complete | Seed-based, reproducible |
 | Validation | ✅ Complete | Post-init checks |
 
-# Graphs
-
-<img width="1024" src="https://github.com/user-attachments/assets/c22362e3-2ecc-4af8-a694-49d8474a0b96" />
-<img width="1024" src="https://github.com/user-attachments/assets/eb712859-8310-4363-b4c6-f6347f273c74" />
-
 ## Use Case
 
 For small to medium games or simulations requiring a lightweight, quick-to-evaluate damage model on any actor (vehicle, structure, entity).  
