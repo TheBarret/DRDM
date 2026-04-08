@@ -69,49 +69,34 @@ The system resolves damage deterministically given only:
 
 ```text
 python run.py
-Dry test: plate=8.0mm, STEEL, P_in=5.56mm, RIFLE_BALL, cal=5.56mm
+Dry test: plate=10.0mm, STEEL, P_in=9.0mm, PISTOL, cal=9.0mm
   Health |    t_eff  |    Outcome |  Damage  |      HP  | Spall Frags | Spall Vel
 ------------------------------------------------------------------------------------------
-  100.0% |    8.00mm |    stopped |   41.7HP |   58.3HP |           0 |      0.0m/s
-   97.5% |    7.93mm |    stopped |   41.7HP |   55.8HP |           2 |    240.2m/s
-   95.0% |    7.91mm |    stopped |   41.7HP |   53.3HP |           2 |    240.5m/s
-   92.5% |    7.90mm |    stopped |   41.7HP |   50.8HP |           2 |    240.8m/s
-   90.0% |    7.87mm |    stopped |   41.7HP |   48.3HP |           2 |    241.2m/s
-   87.5% |    7.85mm |    stopped |   41.7HP |   45.8HP |           2 |    241.7m/s
-   85.0% |    7.82mm |    stopped |   41.7HP |   43.3HP |           2 |    242.3m/s
-   82.5% |    7.78mm |    stopped |   41.7HP |   40.8HP |           2 |    243.0m/s
-   80.0% |    7.73mm |    stopped |   41.7HP |   38.3HP |           2 |    243.8m/s
-   77.5% |    7.68mm |    stopped |   41.7HP |   35.8HP |           2 |    244.8m/s
-   75.0% |    7.62mm |    stopped |   41.7HP |   33.3HP |           2 |    246.0m/s
-   72.5% |    7.55mm |    stopped |   41.7HP |   30.8HP |           2 |    247.4m/s
-   70.0% |    7.46mm |    stopped |   41.7HP |   28.3HP |           2 |    249.0m/s
-   67.5% |    7.37mm |    stopped |   41.7HP |   25.8HP |           2 |    250.9m/s
-   65.0% |    7.26mm |    stopped |   41.7HP |   23.3HP |           2 |    253.2m/s
-   62.5% |    7.14mm |    stopped |   41.7HP |   20.8HP |           2 |    255.8m/s
-   60.0% |    7.01mm |    stopped |   41.7HP |   18.3HP |           2 |    258.7m/s
-   57.5% |    6.87mm |    stopped |   41.7HP |   15.8HP |           2 |    262.0m/s
-   55.0% |    6.72mm |    stopped |   41.7HP |   13.3HP |           2 |    265.6m/s
-   52.5% |    6.56mm |    stopped |   41.7HP |   10.8HP |           2 |    269.5m/s
-   50.0% |    6.40mm |    stopped |   41.7HP |    8.3HP |           2 |    273.8m/s
-   47.5% |    6.24mm |    stopped |   41.7HP |    5.8HP |           2 |    278.2m/s
-   45.0% |    6.08mm |    stopped |   41.7HP |    3.3HP |           2 |    282.8m/s
-   42.5% |    5.93mm |    stopped |   41.7HP |    0.8HP |           2 |    287.4m/s
-   40.0% |    5.79mm |    stopped |   40.0HP |    0.0HP |           2 |    292.0m/s
-   37.5% |    5.66mm |    stopped |   37.5HP |    0.0HP |           2 |    296.4m/s
-   35.0% |    5.54mm | penetrated |   35.0HP |    0.0HP |           3 |    300.7m/s
-   32.5% |    5.43mm | penetrated |   32.5HP |    0.0HP |           3 |    304.7m/s
-   30.0% |    5.34mm | penetrated |   30.0HP |    0.0HP |           3 |    308.3m/s
-   27.5% |    5.25mm | penetrated |   27.5HP |    0.0HP |           3 |    311.7m/s
-   25.0% |    5.18mm | penetrated |   25.0HP |    0.0HP |           3 |    314.6m/s
-   22.5% |    5.12mm | penetrated |   22.5HP |    0.0HP |           3 |    317.2m/s
-   20.0% |    5.07mm | penetrated |   20.0HP |    0.0HP |           3 |    319.5m/s
-   17.5% |    5.02mm | penetrated |   17.5HP |    0.0HP |           3 |    321.5m/s
-   15.0% |    4.98mm | penetrated |   15.0HP |    0.0HP |           3 |    323.1m/s
-   12.5% |    4.95mm | penetrated |   12.5HP |    0.0HP |           3 |    324.6m/s
-   10.0% |    4.93mm | penetrated |   10.0HP |    0.0HP |           3 |    325.8m/s
-    7.5% |    4.90mm | penetrated |    7.5HP |    0.0HP |           3 |    326.8m/s
-    5.0% |    4.89mm | penetrated |    5.0HP |    0.0HP |           3 |    327.6m/s
-    2.5% |    4.87mm | penetrated |    2.5HP |    0.0HP |           3 |    328.3m/s
-    0.0% |    4.86mm | penetrated |    0.0HP |    0.0HP |           3 |    328.9m/s
+  100.0% |   10.00mm |    stopped |   43.2HP |  100.0HP |           2 |     80.0m/s [0]
+   96.0% |    9.90mm |    stopped |   43.2HP |   96.0HP |           2 |     80.0m/s [1]
+   92.0% |    9.87mm |    stopped |   43.2HP |   92.0HP |           2 |     80.0m/s [2]
+   88.0% |    9.82mm |    stopped |   43.2HP |   88.0HP |           2 |     80.0m/s [3]
+   84.0% |    9.75mm |    stopped |   43.2HP |   84.0HP |           2 |     80.0m/s [4]
+   80.0% |    9.67mm |    stopped |   43.2HP |   80.0HP |           2 |     80.0m/s [5]
+   76.0% |    9.56mm |    stopped |   43.2HP |   76.0HP |           2 |     80.0m/s [6]
+   72.0% |    9.41mm |    stopped |   43.2HP |   72.0HP |           2 |     80.0m/s [7]
+   68.0% |    9.23mm |    stopped |   43.2HP |   68.0HP |           2 |     80.0m/s [8]
+   64.0% |    9.02mm |    stopped |   43.2HP |   64.0HP |           2 |     80.0m/s [9]
+   60.0% |    8.76mm | penetrated |   42.0HP |   60.0HP |           3 |     80.0m/s [10]
+   56.0% |    8.47mm | penetrated |   40.7HP |   56.0HP |           3 |     80.0m/s [11]
+   52.0% |    8.16mm | penetrated |   39.2HP |   52.0HP |           3 |     80.0m/s [12]
+   48.0% |    7.84mm | penetrated |   37.6HP |   48.0HP |           3 |     80.0m/s [13]
+   44.0% |    7.53mm | penetrated |   36.1HP |   44.0HP |           3 |     80.0m/s [14]
+   40.0% |    7.24mm | penetrated |   34.8HP |   40.0HP |           3 |     80.0m/s [15]
+   36.0% |    6.98mm | penetrated |   33.5HP |   36.0HP |           3 |     80.0m/s [16]
+   32.0% |    6.77mm | penetrated |   32.0HP |   32.0HP |           3 |     80.0m/s [17]
+   28.0% |    6.59mm | penetrated |   28.0HP |   28.0HP |           4 |     80.0m/s [18]
+   24.0% |    6.44mm | penetrated |   24.0HP |   24.0HP |           4 |     80.0m/s [19]
+   20.0% |    6.33mm | penetrated |   20.0HP |   20.0HP |           4 |     80.0m/s [20]
+   16.0% |    6.25mm | penetrated |   16.0HP |   16.0HP |           4 |     80.0m/s [21]
+   12.0% |    6.18mm | penetrated |   12.0HP |   12.0HP |           4 |     80.0m/s [22]
+    8.0% |    6.13mm | penetrated |    8.0HP |    8.0HP |           4 |     80.0m/s [23]
+    4.0% |    6.10mm | penetrated |    4.0HP |    4.0HP |           4 |     80.0m/s [24]
+    0.0% |    6.07mm | penetrated |    0.0HP |    0.0HP |           4 |     80.0m/s [25]
 ```
 
