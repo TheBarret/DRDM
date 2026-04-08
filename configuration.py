@@ -1,6 +1,10 @@
 from enum import Enum
 from dataclasses import dataclass, field
+from typing import Protocol, Tuple
 
+# FNV-1a prime used for deterministic hash mixing.
+# Shared here so SeededRoller and Plate._ricochet_seed stay in sync.
+FNV_PRIME: int = 16777619
 
 class AmmoType(Enum):
     # Vehicle based
@@ -29,6 +33,48 @@ class Material(Enum):
     ALUMINUM  = 2
     COMPOSITE = 3
 
+
+# ── RollProvider protocol ──────────────────────────────────────────────────
+
+class RollProvider(Protocol):
+    """
+    Anything that can produce a float in [0, 1) given an integer seed.
+    Inject a different implementation for tests, replays, or deterministic sim.
+    """
+    def roll(self, seed: int) -> float:
+        ...
+
+
+class SeededRoller:
+    """
+    Deterministic hash-based roller using a Murmur3 finalizer.
+    Produces a stable float in [0, 1) for a given integer seed.
+    Not a PRNG — stateless, same seed always returns same value.
+    Immune to PYTHONHASHSEED.
+    """
+    def roll(self, seed: int) -> float:
+        h = seed & 0xFFFFFFFF
+        h ^= h >> 16
+        h  = (h * 0xd2a98b26) & 0xFFFFFFFF
+        h ^= h >> 13
+        h  = (h * 0x1b873593) & 0xFFFFFFFF
+        h ^= h >> 16
+        value = (h & 0xFFFFFF) / 0x1000000
+        return value
+
+
+class ConstantRoller:
+    """
+    Test roller: always returns the same value regardless of seed.
+        ConstantRoller(0.0)  → never ricochet
+        ConstantRoller(1.0)  → always ricochet
+    """
+    def __init__(self, value: float = 0.0):
+        self.value = value
+
+    def roll(self, seed: int) -> float:
+        return self.value
+
 # ── SpallData ─────────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
@@ -56,6 +102,63 @@ class SpallData:
     def none() -> "SpallData":
         """Canonical zero-spall sentinel. Use instead of constructing zeros manually."""
         return SpallData(0, 0.0, 0.0, 0.0, 0.0)
+
+# ── HitResult ─────────────────────────────────────────────────────────────
+
+class Outcome(Enum):
+    STOPPED    = "stopped"
+    PENETRATED = "penetrated"
+    RICOCHET   = "ricochet"
+    SHATTERED  = "shattered"
+
+
+@dataclass(frozen=True)
+class HitResult:
+    """
+    Immutable result of a plate hit. Does NOT mutate the plate.
+    Caller is responsible for committing:  plate.health = result.new_health
+    """
+    residual_penetration: float     # mm RHAe remaining after this plate (0 if stopped)
+    plate_damage:         float     # HP subtracted from plate
+    outcome:              Outcome
+    new_health:           float     # proposed health after this hit
+    spall:                SpallData = field(default_factory=SpallData.none)
+
+# ── Hit Chain ────────────────────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class HitChain:
+    """
+    Result of a projectile traversing multiple plates/components.
+    Immutable record of the complete penetration path.
+    """
+    results: Tuple[HitResult, ...]
+    final_outcome: Outcome = field(init=False)
+    total_damage: float = field(init=False)
+    residual_penetration: float = field(init=False)
+    
+    def __post_init__(self):
+        if not self.results:
+            object.__setattr__(self, 'final_outcome', Outcome.STOPPED)
+            object.__setattr__(self, 'total_damage', 0.0)
+            object.__setattr__(self, 'residual_penetration', 0.0)
+        else:
+            last = self.results[-1]
+            object.__setattr__(self, 'final_outcome', last.outcome)
+            object.__setattr__(self, 'total_damage', sum(r.plate_damage for r in self.results))
+            object.__setattr__(self, 'residual_penetration', last.residual_penetration)
+    
+    @property
+    def penetrated(self) -> bool:
+        return self.final_outcome == Outcome.PENETRATED
+    
+    @property
+    def stopped(self) -> bool:
+        return self.final_outcome in (Outcome.STOPPED, Outcome.RICOCHET, Outcome.SHATTERED)
+    
+    @property
+    def total_spall_fragments(self) -> int:
+        return sum(r.spall.fragment_count for r in self.results)
 
 
 # ── Reference tables ──────────────────────────────────────────────────────
